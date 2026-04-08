@@ -61,7 +61,7 @@ public class AlmacenajeContenedores {
         }
         if (indiceObjeto == objetos.length) {
             minContenedores = contenedoresUsados;
-            // Clonamos la asignación actual como la mejor encontrada hasta el momento
+            
             System.arraycopy(asignacionActual, 0, mejorAsignacion, 0, objetos.length);
             return;
         }
