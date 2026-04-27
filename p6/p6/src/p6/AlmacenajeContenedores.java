@@ -9,10 +9,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AlmacenajeContenedores {
-    private int capacidad;
+    private int capacidad; // peso maximo que soporta un contenedor
     private Integer[] objetos;
 
+    // Almacena la suma de los pesos de los objetos contenidos en ese contenedor
+    // si sumaContenedores[1] = 20 quiere decir que los objetos que hay dentro pesan 20
+    // si "capacidad" = 30, sumaContenedores[i] no puede ser >30
+    
     private int[] sumaContenedores;
+
     private int[] asignacionActual;
 
     private int minContenedores;
@@ -56,45 +61,48 @@ public class AlmacenajeContenedores {
 
     private void backtrack(int indiceObjeto, int contenedoresUsados) {
         llamadasRecursivas++;
-        if (contenedoresUsados >= minContenedores) { //si la opcion que estamos mirando es peor que la mejor, no lo miramos
+        if (contenedoresUsados >= minContenedores) { // si la opcion que estamos mirando es peor que la mejor, no lo
+                                                     // miramos
             return;
         }
-        if (indiceObjeto == objetos.length) { //si llegas al final de la lista de objetos, es la mejor solucion, porque 
-                                              //llegamos sin pasar por el if de arriba
+        if (indiceObjeto == objetos.length) { // si llegas al final de la lista de objetos, es la mejor solucion, porque
+                                              // llegamos sin pasar por el if de arriba
             minContenedores = contenedoresUsados;
 
             System.arraycopy(asignacionActual, 0, mejorAsignacion, 0, objetos.length);
             return;
         }
-        //mira la opcion de meter el objeto en un contenedor que ya esta creado
+        // mira la opcion de meter el objeto en un contenedor que ya esta creado
         for (int j = 0; j < contenedoresUsados; j++) {
             if (sumaContenedores[j] + objetos[indiceObjeto] <= capacidad) {
 
-                //Avanzar 
-                sumaContenedores[j] += objetos[indiceObjeto];//(meter en el contenedor j el objeto que estas insertando)
-                asignacionActual[indiceObjeto] = j; //añade a la asignacion actual este contenedor
+                // Avanzar
+                sumaContenedores[j] += objetos[indiceObjeto];// (meter en el contenedor j el objeto que estas
+                                                             // insertando)
+                asignacionActual[indiceObjeto] = j; // añade a la asignacion actual este contenedor
 
                 // llamada recursiva para ver todas las opciones
                 backtrack(indiceObjeto + 1, contenedoresUsados);
 
-                //volver atras para hacer como si no hubieramos hecho nada 
-                //y comprobar todas las opciones posibles
+                // volver atras para hacer como si no hubieramos hecho nada
+                // y comprobar todas las opciones posibles
                 sumaContenedores[j] -= objetos[indiceObjeto];
             }
-        }//crea un contenedor nuevo para el objeto que queremos meter
+        } // crea un contenedor nuevo para el objeto que queremos meter
         if (contenedoresUsados + 1 < minContenedores) {
-            //[C, C , C, C, C, N, N] 
-            //al ponerlo en el indice "contenedoresUsados" es al final de sumaContenedores, entonces se crea
-            //uno nuevo donde se mete el objeto que queremos meter
+            // [C, C , C, C, C, N, N]
+            // al ponerlo en el indice "contenedoresUsados" es al final de sumaContenedores,
+            // entonces se crea
+            // uno nuevo donde se mete el objeto que queremos meter
 
-            //Avanzar 
+            // Avanzar
             sumaContenedores[contenedoresUsados] += objetos[indiceObjeto];
             asignacionActual[indiceObjeto] = contenedoresUsados;
             // llamada recursiva para ver todas las opciones
-            backtrack(indiceObjeto + 1, contenedoresUsados + 1); //ahora tenemos un contenedor mas, 
-                                                                 //por eso contenedoresUsados + 1
-            //volver atras para hacer como si no hubieramos hecho nada 
-            //y comprobar todas las opciones posibles
+            backtrack(indiceObjeto + 1, contenedoresUsados + 1); // ahora tenemos un contenedor mas,
+                                                                 // por eso contenedoresUsados + 1
+            // volver atras para hacer como si no hubieramos hecho nada
+            // y comprobar todas las opciones posibles
             sumaContenedores[contenedoresUsados] -= objetos[indiceObjeto];
         }
     }
