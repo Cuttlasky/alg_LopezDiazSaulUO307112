@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AlmacenajeContenedores {
-    private int C;
+    private int capacidad;
     private Integer[] objetos;
 
     private int[] sumaContenedores;
@@ -35,7 +35,7 @@ public class AlmacenajeContenedores {
         try {
             Scanner scanner = new Scanner(new File(archivo));
             if (scanner.hasNextInt()) {
-                C = scanner.nextInt();
+                capacidad = scanner.nextInt();
             }
             List<Integer> listaObjetos = new ArrayList<>();
             while (scanner.hasNextInt()) {
@@ -56,32 +56,45 @@ public class AlmacenajeContenedores {
 
     private void backtrack(int indiceObjeto, int contenedoresUsados) {
         llamadasRecursivas++;
-        if (contenedoresUsados >= minContenedores) {
+        if (contenedoresUsados >= minContenedores) { //si la opcion que estamos mirando es peor que la mejor, no lo miramos
             return;
         }
-        if (indiceObjeto == objetos.length) {
+        if (indiceObjeto == objetos.length) { //si llegas al final de la lista de objetos, es la mejor solucion, porque 
+                                              //llegamos sin pasar por el if de arriba
             minContenedores = contenedoresUsados;
-            
+
             System.arraycopy(asignacionActual, 0, mejorAsignacion, 0, objetos.length);
             return;
         }
+        //mira la opcion de meter el objeto en un contenedor que ya esta creado
         for (int j = 0; j < contenedoresUsados; j++) {
-            if (sumaContenedores[j] + objetos[indiceObjeto] <= C) {
-                sumaContenedores[j] += objetos[indiceObjeto];
-                asignacionActual[indiceObjeto] = j;
+            if (sumaContenedores[j] + objetos[indiceObjeto] <= capacidad) {
 
+                //Avanzar 
+                sumaContenedores[j] += objetos[indiceObjeto];//(meter en el contenedor j el objeto que estas insertando)
+                asignacionActual[indiceObjeto] = j; //añade a la asignacion actual este contenedor
+
+                // llamada recursiva para ver todas las opciones
                 backtrack(indiceObjeto + 1, contenedoresUsados);
 
+                //volver atras para hacer como si no hubieramos hecho nada 
+                //y comprobar todas las opciones posibles
                 sumaContenedores[j] -= objetos[indiceObjeto];
             }
-        }
-
+        }//crea un contenedor nuevo para el objeto que queremos meter
         if (contenedoresUsados + 1 < minContenedores) {
+            //[C, C , C, C, C, N, N] 
+            //al ponerlo en el indice "contenedoresUsados" es al final de sumaContenedores, entonces se crea
+            //uno nuevo donde se mete el objeto que queremos meter
+
+            //Avanzar 
             sumaContenedores[contenedoresUsados] += objetos[indiceObjeto];
             asignacionActual[indiceObjeto] = contenedoresUsados;
-
-            backtrack(indiceObjeto + 1, contenedoresUsados + 1);
-
+            // llamada recursiva para ver todas las opciones
+            backtrack(indiceObjeto + 1, contenedoresUsados + 1); //ahora tenemos un contenedor mas, 
+                                                                 //por eso contenedoresUsados + 1
+            //volver atras para hacer como si no hubieramos hecho nada 
+            //y comprobar todas las opciones posibles
             sumaContenedores[contenedoresUsados] -= objetos[indiceObjeto];
         }
     }

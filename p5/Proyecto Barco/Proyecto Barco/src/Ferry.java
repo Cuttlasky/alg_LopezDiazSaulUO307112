@@ -52,21 +52,102 @@ public class Ferry {
 
     public void run() {
         dp[0][0] = true;
+        int numeroVehiculos = 0;
         for (int i = 1; i < vehiculos.size() + 1; i++) {
-            for (int l = boatLength; boatLength >= 0; l--) {
-                if (!dp[i - 1][l]) {
+
+            boolean cargado=false;
+            for (int longitud = boatLength; longitud >= 0; longitud--) {
+
+                if (!dp[i - 1][longitud]) { //si la longitud que miramos no es posible, pasamos a la siguiente
                     continue;
                 }
                 // meter coche en babor
-                if (l + vehiculos.get(i - 1) <= boatLength) {
-                    dp[i][l + vehiculos.get(i - 1)] = true;
+                if (longitud + vehiculos.get(i - 1) <= boatLength) {
+                    dp[i][longitud + vehiculos.get(i - 1)] = true;//ejemplo-> si dp[3][8]=true significa
+                                                                //  que existe una forma de meter los primeros
+                                                                //  3 coches de forma que babor ocupe 8 metros
+                    cargado=true;
                 }
                 // meter coche en estribor
-                if (sumatorio[i] - l <= boatLength) {
-                    dp[i][l] = true;
+                if (sumatorio[i] - longitud <= boatLength) {
+                    dp[i][longitud] = true; 
+                    cargado=true;
                 }
+                
+            }
+            if(!cargado){ //si no conseguimos cargar ningun coche, detenemos la busqueda
+                break;
+            }
+            numeroVehiculos=i;
+        }
+        imprimirMatriz(numeroVehiculos);
+        reconstruirSolucion(numeroVehiculos);
+    }
+
+    private void reconstruirSolucion(int numeroVehiculos) {
+        if (numeroVehiculos == 0) {
+            System.out.println("No hay solución (ningún vehículo cabe).");
+            return;
+        }
+
+        
+        int espacioBabor = -1;
+        for (int longitud = boatLength; longitud >= 0; longitud--) {
+            if (dp[numeroVehiculos][longitud]) {
+                espacioBabor = longitud;
+                break; // Encontramos la configuración final de Babor
             }
         }
-        System.out.println(dp);
+        // Guardamos esta ocupación final para imprimirla al terminar el proceso
+        int ocupacionBaborFinal = espacioBabor;
+        
+        // hacemos un array para almacenar las solucione, como estamos recorriendo al reves, 
+        // este array va a haber que imprimirlo al revés
+        String[] asignaciones = new String[numeroVehiculos];
+
+        for (int i = numeroVehiculos; i > 0; i--) {
+            int v = vehiculos.get(i - 1);
+
+            if (espacioBabor - v >= 0 && dp[i - 1][espacioBabor - v]) {
+
+                asignaciones[i - 1] = "Vehículo " + i + " (longitud " + v + ") a babor.";
+                espacioBabor = espacioBabor - v; //hay que restarle la longitud del vehiculo para la siguiente 
+                                                 //comprobacion (estamos retrocediendo en el tiempo)
+            } else {
+                asignaciones[i - 1] = "Vehículo " + i + " (longitud " + v + ") a estribor.";
+                //no restamos nada porque meterlo a estribor no quita sitio en babor
+            }
+        }
+
+        System.out.println("\nPosible asignación:");
+        for (int i = 0; i < numeroVehiculos; i++) {
+            System.out.println(asignaciones[i]);
+        }
+
+        int espacioEstribor = sumatorio[numeroVehiculos] - ocupacionBaborFinal; //ocupacionEstribor=total-ocupacionBabor
+        
+        System.out.println("Ocupación final: Babor " + ocupacionBaborFinal + "m / Estribor " + espacioEstribor + "m (válido <= " + boatLength + ").");
     }
+
+    private void imprimirMatriz(int numeroVehiculos) {
+        System.out.println("Han llegado un total de  "+ vehiculos.size()+" vehiculos"+ " ("+numeroVehiculos+" viajaran)");
+        
+        System.out.println("\nTabla con los cálculos realizados:");
+        
+        System.out.print("V/L\t");
+        for (int l = 0; l <= boatLength; l++) {
+            System.out.print(l + "\t");
+        }
+        System.out.println();
+
+        for (int i = 0; i <= numeroVehiculos; i++) {
+            System.out.print(i + "\t"); // Número del vehículo
+            for (int l = 0; l <= boatLength; l++) {
+                // Si la celda es true imprimimos T, si es false imprimimos F
+                System.out.print((dp[i][l] ? "T" : "F") + "\t");
+            }
+            System.out.println(); 
+        }
+    }
+    
 }

@@ -3,7 +3,7 @@ package p6;
 public class AlmacenajeContenedoresTiempos {
 
     public static void main(String[] args) {
-        String fichero = args[0];
+        String fichero = "src/CasosPrueba/test01.txt";
 
         long inicio = System.currentTimeMillis();
 

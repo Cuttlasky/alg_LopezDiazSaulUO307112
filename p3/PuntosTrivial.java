@@ -1,69 +1,83 @@
-
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PuntosTrivial {
 
+   static class Punto {
+        double x;
+        double y;
+
+        public Punto(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(Locale.US, "[%.6f, %.6f]", x, y);
+        }
+    }
+
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("Por favor, indica la ruta del archivo de texto como argumento.");
+        if (args.length < 1) {
+            System.out.println("Error: Debes indicar el nombre del fichero.");
             return;
         }
 
-        try {
-            double[][] puntos = leerFichero(args);
-            buscarSolucionTrivial(puntos);
-        } catch (Exception e) {
-            System.out.println("Error procesando el fichero: " + e.getMessage());
-        }
-    }
+        String nombreFichero = args[0];
+        List<Punto> puntos = new ArrayList<>();
 
-    public static double[][] leerFichero(String ruta) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(ruta));
-        String linea;
-        List<double[]> listaTemporal = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreFichero))) {
+            
+            String primeraLinea = br.readLine();
+            if (primeraLinea == null) return;
+            int n = Integer.parseInt(primeraLinea.trim());
 
-        while ((linea = br.readLine()) != null) {
-            String[] partes = linea.trim().split("\\s+");
-            if (partes.length >= 2) {
-                double x = Double.parseDouble(partes);
-                double y = Double.parseDouble(partes[1]);
-                listaTemporal.add(new double[]{x, y});
+            for (int i = 0; i < n; i++) {
+                String linea = br.readLine();
+                if (linea != null) {
+                    
+                    String[] partes = linea.split(",");
+
+                    double x = Double.parseDouble(partes[0]);
+                    double y = Double.parseDouble(partes[1]);
+                    puntos.add(new Punto(x, y));
+                }
             }
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error al leer el fichero: " + e.getMessage());
+            return;
         }
-        br.close();
-        return listaTemporal.toArray();
-    }
 
-    public static void buscarSolucionTrivial(double[][] puntos) {
-        double minDistancia = Double.POSITIVE_INFINITY;
-        double[] mejorP1 = null;
-        double[] mejorP2 = null;
-        int n = puntos.length;
+        if (puntos.size() < 2) return;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                double distancia = Math.sqrt(
-                        Math.pow(puntos[i] - puntos[j], 2) 
-                      + Math.pow(puntos[i][1] - puntos[j][1], 2)
-                );
+        double distanciaMinima = Double.MAX_VALUE;
+        Punto punto1Min = null;
+        Punto punto2Min = null;
 
-                if (distancia < minDistancia) {
-                    minDistancia = distancia;
-                    mejorP1 = puntos[i];
-                    mejorP2 = puntos[j];
+        for (int i = 0; i < puntos.size(); i++) {
+            for (int j = i + 1; j < puntos.size(); j++) {
+                Punto p1 = puntos.get(i);
+                Punto p2 = puntos.get(j);
+
+                double difX = p1.x - p2.x;
+                double difY = p1.y - p2.y;
+
+                double distancia = Math.sqrt((difX * difX) + (difY * difY));
+
+                if (distancia < distanciaMinima) {
+                    distanciaMinima = distancia;
+                    punto1Min = p1;
+                    punto2Min = p2;
                 }
             }
         }
 
-        if (mejorP1 != null && mejorP2 != null) {
-            System.out.println("PUNTOS MÁS CERCANOS: [" + mejorP1 + ", " + mejorP1[1] + "] [" 
-                                                        + mejorP2 + ", " + mejorP2[1] + "]");
-            System.out.println("SU DISTANCIA MÍNIMA = " + minDistancia);
-        }
+        System.out.printf(Locale.US, "PUNTOS MÁS CERCANOS: %s %s\n", punto1Min, punto2Min);
+        System.out.printf(Locale.US, "SU DISTANCIA MÍNIMA = %f\n", distanciaMinima);
     }
 }
