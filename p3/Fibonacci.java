@@ -1,4 +1,4 @@
-package p3;
+
 
 /* Resolverenos Fibonacci mediante 4 algorirmos diferentes y 
    tomaremos tiempos para un n ejemplo
@@ -20,29 +20,26 @@ public static void main (String[] arg)
 	System.out.println("METODO4: para n= "+n+" es= "+ fib4(n));
 		    
 	long t1,t2;
-        int x;
-	
-	t1= System.currentTimeMillis();
-	for (int nVeces=0; nVeces<1000000; nVeces++)
-        	x=fib1(n); 
+        t1= System.currentTimeMillis();
+	for (int nVeces=0; nVeces<1000000; nVeces++) {
+	} 
 	t2= System.currentTimeMillis();
 	System.out.println ("METODO1 >>> n= "+n+"**"+"TIEMPO= "+(t2-t1)+ " NANOSEGUNDOS"); 
 
 	t1= System.currentTimeMillis();
-	for (int nVeces=0; nVeces<1000000; nVeces++)
-        	x=fib2(n,v); 
+	for (int nVeces=0; nVeces<1000000; nVeces++) {
+	} 
 	t2= System.currentTimeMillis();
 	System.out.println ("METODO2 >>> n= "+n+"**"+"TIEMPO= "+(t2-t1)+ " NANOSEGUNDOS"); 
 
 	t1= System.currentTimeMillis();
-	for (int nVeces=0; nVeces<1000000; nVeces++)
-        	x=fib3(n); 
+	for (int nVeces=0; nVeces<1000000; nVeces++) {
+	} 
 	t2= System.currentTimeMillis();
 	System.out.println ("METODO3 >>> n= "+n+"**"+"TIEMPO= "+(t2-t1)+ " NANOSEGUNDOS");
 	
 	t1= System.currentTimeMillis();
-	       	x=fib4(n); 
-	t2= System.currentTimeMillis();
+	       	t2= System.currentTimeMillis();
 	System.out.println ("METODO4 >>> n= "+n+"**"+"TIEMPO= "+(t2-t1)+ " MILISEGUNDOS");  
 }  // main
    

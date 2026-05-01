@@ -1,5 +1,3 @@
-package p6Extra;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,7 +140,7 @@ public class NReinas {
      */
     public static void main(String[] args) {
         NReinas algoritmo = new NReinas();
-        int n = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 16;
+        int n = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 12;
         long t1=System.currentTimeMillis();
         List<List<String>> resultado = algoritmo.resolverNReinas(n);
         long t2=System.currentTimeMillis();

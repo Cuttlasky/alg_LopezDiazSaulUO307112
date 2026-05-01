@@ -1,4 +1,4 @@
-package p7;
+package p7; // Cambiado por exigencia del guion de la P7
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,19 +8,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-public class AlmacenajeContenedores {
-    private int C;
+public class AlmacenajeContenedoresRyP { // Cambiado por exigencia del guion de la P7
+    private int capacidad; // peso maximo que soporta un contenedor
     private Integer[] objetos;
 
+    // Almacena la suma de los pesos de los objetos contenidos en ese contenedor
+    // si sumaContenedores[1] = 20 quiere decir que los objetos que hay dentro pesan 20
+    // si "capacidad" = 30, sumaContenedores[i] no puede ser >30
+    
     private int[] sumaContenedores;
+
     private int[] asignacionActual;
 
     private int minContenedores;
     private int[] mejorAsignacion;
 
     private long llamadasRecursivas;
+    
+    private int sumaTotalPesos;
 
-    public AlmacenajeContenedores(String archivo) {
+    public AlmacenajeContenedoresRyP(String archivo) {
         leerFichero(archivo);
         sumaContenedores = new int[objetos.length];
         asignacionActual = new int[objetos.length];
@@ -29,13 +36,18 @@ public class AlmacenajeContenedores {
         minContenedores = objetos.length;
         llamadasRecursivas = 0;
         Arrays.sort(objetos, Collections.reverseOrder());
+        
+        sumaTotalPesos = 0;
+        for (int peso : objetos) {
+            sumaTotalPesos += peso;
+        }
     }
 
     private void leerFichero(String archivo) {
         try {
             Scanner scanner = new Scanner(new File(archivo));
             if (scanner.hasNextInt()) {
-                C = scanner.nextInt();
+                capacidad = scanner.nextInt();
             }
             List<Integer> listaObjetos = new ArrayList<>();
             while (scanner.hasNextInt()) {
@@ -50,44 +62,57 @@ public class AlmacenajeContenedores {
     }
 
     public void resolver() {
-        backtrack(0, 0,sumaTotal());
+        backtrack(0, 0, sumaTotalPesos);
         imprimirSolucion();
     }
 
     private void backtrack(int indiceObjeto, int contenedoresUsados, int sumaRestante) {
-
-        // LowerBound
-        // calcular el numero minimo teorico de contenedores adicionales necesarios
-
-        int lowerBound = (sumaRestante + C -1) / C;
-        
         llamadasRecursivas++;
-        if (contenedoresUsados + lowerBound >= minContenedores) {
+        
+        int contenedoresMinimosExtra = (sumaRestante + capacidad - 1) / capacidad;
+        if (contenedoresUsados + contenedoresMinimosExtra >= minContenedores) { 
             return;
         }
-        if (indiceObjeto == objetos.length) {
+
+        if (indiceObjeto == objetos.length) { // si llegas al final de la lista de objetos, es la mejor solucion, porque
+                                              // llegamos sin pasar por el if de arriba
             minContenedores = contenedoresUsados;
 
             System.arraycopy(asignacionActual, 0, mejorAsignacion, 0, objetos.length);
             return;
         }
+        // mira la opcion de meter el objeto en un contenedor que ya esta creado
         for (int j = 0; j < contenedoresUsados; j++) {
-            if (sumaContenedores[j] + objetos[indiceObjeto] <= C) {
-                sumaContenedores[j] += objetos[indiceObjeto];
-                asignacionActual[indiceObjeto] = j;
+            if (sumaContenedores[j] + objetos[indiceObjeto] <= capacidad) {
 
-                backtrack(indiceObjeto + 1, contenedoresUsados);
+                // Avanzar
+                sumaContenedores[j] += objetos[indiceObjeto];// (meter en el contenedor j el objeto que estas
+                                                             // insertando)
+                asignacionActual[indiceObjeto] = j; // añade a la asignacion actual este contenedor
 
+                // --- MODIFICADO PARA P7: Restamos el peso del objeto al llamar a backtrack
+                backtrack(indiceObjeto + 1, contenedoresUsados, sumaRestante - objetos[indiceObjeto]);
+
+                // volver atras para hacer como si no hubieramos hecho nada
+                // y comprobar todas las opciones posibles
                 sumaContenedores[j] -= objetos[indiceObjeto];
             }
-        }
-
+        } // crea un contenedor nuevo para el objeto que queremos meter
         if (contenedoresUsados + 1 < minContenedores) {
+            // [C, C , C, C, C, N, N]
+            // al ponerlo en el indice "contenedoresUsados" es al final de sumaContenedores,
+            // entonces se crea
+            // uno nuevo donde se mete el objeto que queremos meter
+
+            // Avanzar
             sumaContenedores[contenedoresUsados] += objetos[indiceObjeto];
             asignacionActual[indiceObjeto] = contenedoresUsados;
-
-            backtrack(indiceObjeto + 1, contenedoresUsados + 1);
-
+            
+            // --- MODIFICADO PARA P7: Restamos el peso del objeto al llamar a backtrack
+            backtrack(indiceObjeto + 1, contenedoresUsados + 1, sumaRestante - objetos[indiceObjeto]); // ahora tenemos un contenedor mas,
+                                                                         // por eso contenedoresUsados + 1
+            // volver atras para hacer como si no hubieramos hecho nada
+            // y comprobar todas las opciones posibles
             sumaContenedores[contenedoresUsados] -= objetos[indiceObjeto];
         }
     }
@@ -117,7 +142,7 @@ public class AlmacenajeContenedores {
     }
 
     public static void main(String[] args) {
-        AlmacenajeContenedores problema = new AlmacenajeContenedores(args[0]);
+        AlmacenajeContenedoresRyP problema = new AlmacenajeContenedoresRyP(args[0]);
         problema.resolver();
     }
 }

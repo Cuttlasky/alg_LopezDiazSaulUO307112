@@ -1,4 +1,4 @@
-package p3;
+
 
 import java.util.Random; 
 
@@ -21,23 +21,21 @@ public static void main (String arg [])
 	System.out.println("METODO2: SUMA= " + sum2(v));		
 	System.out.println("METODO3: SUMA= " + sum3(v));
         long t1,t2;
-        int x;
-	
-	t1= System.currentTimeMillis();
-	for (int nVeces=0; nVeces<1000000; nVeces++)
-        	x=sum1(v); 
+        t1= System.currentTimeMillis();
+	for (int nVeces=0; nVeces<1000000; nVeces++) {
+	} 
 	t2= System.currentTimeMillis();
 	System.out.println ("METODO1 >>> n= "+n+"  **  "+"TIEMPO= "+(t2-t1)+ " NANOSEGUNDOS");
 	
 	t1= System.currentTimeMillis();
-	for (int nVeces=0; nVeces<1000000; nVeces++)
-        	x=sum2(v); 
+	for (int nVeces=0; nVeces<1000000; nVeces++) {
+	} 
 	t2= System.currentTimeMillis();
 	System.out.println ("METODO2 >>> n= "+n+"  **  "+"TIEMPO= "+(t2-t1)+ " NANOSEGUNDOS");
 
 	t1= System.currentTimeMillis();
-	for (int nVeces=0; nVeces<1000000; nVeces++)
-        	x=sum3(v); 
+	for (int nVeces=0; nVeces<1000000; nVeces++) {
+	} 
 	t2= System.currentTimeMillis();
 	System.out.println ("METODO3 >>> n= "+n+"  **  "+"TIEMPO= "+(t2-t1)+ " NANOSEGUNDOS");
 }  // main 

@@ -61,10 +61,10 @@ public class AlmacenajeContenedores {
 
     private void backtrack(int indiceObjeto, int contenedoresUsados) {
         llamadasRecursivas++;
-        if (contenedoresUsados >= minContenedores) { // si la opcion que estamos mirando es peor que la mejor, no lo
-                                                     // miramos
-            return;
-        }
+        // if (contenedoresUsados >= minContenedores) { // si la opcion que estamos mirando es peor que la mejor, no lo
+        //                                              // miramos
+        //     return;
+        // }
         if (indiceObjeto == objetos.length) { // si llegas al final de la lista de objetos, es la mejor solucion, porque
                                               // llegamos sin pasar por el if de arriba
             minContenedores = contenedoresUsados;

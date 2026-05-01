@@ -50,7 +50,7 @@ public class PuntosDyV {
         System.out.println("SU DISTANCIA MÍNIMA = " + minDistancia);
     }
 
-    private static double resolver(List<Punto> lista) {
+    static double resolver(List<Punto> lista) {
         int n = lista.size();
 
         // caso base-> si hay pocos puntos, lo resuelve por fuerza bruta

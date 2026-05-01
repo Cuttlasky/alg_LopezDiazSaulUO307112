@@ -7,7 +7,11 @@ import java.util.Locale;
 
 public class PuntosTrivial {
 
-   static class Punto {
+    public static double distanciaMinima = Double.MAX_VALUE;
+    public static Punto punto1Min = null;
+    public static Punto punto2Min = null;
+
+    static class Punto {
         double x;
         double y;
 
@@ -32,15 +36,16 @@ public class PuntosTrivial {
         List<Punto> puntos = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(nombreFichero))) {
-            
+
             String primeraLinea = br.readLine();
-            if (primeraLinea == null) return;
+            if (primeraLinea == null)
+                return;
             int n = Integer.parseInt(primeraLinea.trim());
 
             for (int i = 0; i < n; i++) {
                 String linea = br.readLine();
                 if (linea != null) {
-                    
+
                     String[] partes = linea.split(",");
 
                     double x = Double.parseDouble(partes[0]);
@@ -52,12 +57,11 @@ public class PuntosTrivial {
             System.out.println("Error al leer el fichero: " + e.getMessage());
             return;
         }
+    }
 
-        if (puntos.size() < 2) return;
-
-        double distanciaMinima = Double.MAX_VALUE;
-        Punto punto1Min = null;
-        Punto punto2Min = null;
+    public static void resolver(List<Punto> puntos) {
+        if (puntos.size() < 2)
+            return;
 
         for (int i = 0; i < puntos.size(); i++) {
             for (int j = i + 1; j < puntos.size(); j++) {
@@ -76,8 +80,8 @@ public class PuntosTrivial {
                 }
             }
         }
-
-        System.out.printf(Locale.US, "PUNTOS MÁS CERCANOS: %s %s\n", punto1Min, punto2Min);
-        System.out.printf(Locale.US, "SU DISTANCIA MÍNIMA = %f\n", distanciaMinima);
+        System.out.printf("PUNTOS MÁS CERCANOS: %s %s\n", punto1Min, punto2Min);
+        System.out.printf("SU DISTANCIA MÍNIMA = %f\n", distanciaMinima);
     }
+
 }

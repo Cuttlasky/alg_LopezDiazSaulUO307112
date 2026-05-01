@@ -1,4 +1,4 @@
-package p3;
+
 
 public class Sustraccion4
 {
@@ -20,7 +20,7 @@ public static void rec4 (int n)
 
 public static void main (String arg []) 
 {
-	long t1,t2,cont;
+	long t1,t2;
 	int nVeces= Integer.parseInt (arg [0]);
 	for (int n=100;n<=102400;n*=2)
 	{
@@ -29,7 +29,6 @@ public static void main (String arg [])
 	
 	for (int repeticiones=1; repeticiones<=nVeces;repeticiones++)
 		{ 
-			cont=0;
 			rec4 (n);
 		} 
 
